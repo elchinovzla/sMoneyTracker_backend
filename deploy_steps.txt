@@ -1,0 +1,20 @@
+DEPLOY IN HEROKU
+Follow these instructions https://devcenter.heroku.com/articles/git
+
+UPDATE HEROKU APP
+** make sure you are in the backend folder
+* git add .
+* git commit -m "update backend"
+* git push heroku master
+
+MISSING CREDENTIAL FILES
+** create within middleware the following files:
+* db-credentials.js which contains this template
+const USER_NAME = 'Mongo DB's user name';
+const PASSWORD = 'Mongo DB's password for that user';
+module.exports = { USER_NAME, PASSWORD };
+
+* email-sender-credentials.js
+const USER_NAME = 'email account to send emails from (this email is consumed by the admin of the accoun in order to create other user accounts)';
+const PASSWORD = 'email's password';
+module.exports = { USER_NAME, PASSWORD};
