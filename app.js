@@ -18,7 +18,7 @@ mongoose
     dbCredentials.USER_NAME +
     ':' +
     dbCredentials.PASSWORD +
-    '@cluster0-fkcx5.mongodb.net/smoney-tracker',
+    dbCredentials.DB_CLUSTER,
     {
       useNewUrlParser: true
     }
