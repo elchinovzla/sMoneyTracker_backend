@@ -1,3 +1,4 @@
 /node_modules
-/middleware/db-credentials.js
-/middleware/email-sender-credentials.js
+middleware/db-credentials.js
+middleware/email-sender-credentials.js
+.history
