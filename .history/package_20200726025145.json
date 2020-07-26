@@ -1,0 +1,26 @@
+{
+  "name": "s-money-tracker",
+  "version": "1.0.14",
+  "license": "SONNY INC",
+  "private": true,
+  "description": "Backend for sMoneyTracker",
+  "scripts": {
+    "start": "node server.js",
+    "server-prod": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "body-parser": "1.19.0",
+    "express": "4.17.1",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "5.9.25",
+    "mongoose-unique-validator": "2.0.3",
+    "nodemailer": "6.4.10",
+    "dinero.js": "1.8.1",
+    "moment": "2.27.0"
+  }
+}
