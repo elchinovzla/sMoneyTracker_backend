@@ -1,1 +1,1 @@
-npm run start:server
+heroku local -p 3000

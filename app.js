@@ -8,17 +8,16 @@ const incomeRoutes = require('./routes/income');
 const moneyRoutes = require('./routes/money');
 const savingsRoutes = require('./routes/savings');
 const expenseRoutes = require('./routes/expense');
-const dbCredentials = require('./middleware/db-credentials');
 
 const app = express();
 
 mongoose
   .connect(
     'mongodb+srv://' +
-    dbCredentials.USER_NAME +
+    process.env.MONGO_USER_NAME +
     ':' +
-    dbCredentials.PASSWORD +
-    dbCredentials.DB_CLUSTER,
+    process.env.MONGO_PASSWORD +
+    process.env.MONGO_CLUSTER,
     {
       useNewUrlParser: true
     }

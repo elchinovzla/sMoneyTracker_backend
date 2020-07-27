@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 const User = require('../models/user');
-const emailCredential = require('../middleware/email-sender-credentials');
 
 const INVALID_CREDENTIALS = 'Wrong Credentials email/password';
 const INACTIVE_USER = 'You no longer has access to this site';
@@ -222,13 +221,13 @@ function sendNotification(recipientEmail, subject, html) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: emailCredential.USER_NAME,
-      pass: emailCredential.PASSWORD
+      user: process.env.EMAIL_USER_NAME,
+      pass: process.env.EMAIL_PASSWORD
     }
   });
 
   let mailOptions = {
-    from: emailCredential.USER_NAME,
+    from: process.env.EMAIL_USER_NAME,
     to: recipientEmail,
     subject: subject,
     html: html
