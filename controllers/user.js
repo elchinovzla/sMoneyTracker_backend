@@ -73,7 +73,7 @@ exports.userLogin = (req, res, next) => {
         {
           email: fetchedUser.email,
           userId: fetchedUser._id,
-          firstName: fetchedUser.firstName + 'test',
+          firstName: fetchedUser.firstName,
           lastName: fetchedUser.lastName,
           isAdmin: fetchedUser.isAdmin,
           isActive: fetchedUser.isActive
