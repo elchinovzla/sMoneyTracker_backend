@@ -10,7 +10,7 @@ const EXPENSE_TYPE = {
   MEMBERSHIP: 'MEMBERSHIP',
   OTHER: 'OTHER',
   TRANSPORTATION: 'TRANSPORTATION',
-  TRAVEL: 'TRAVEL'
+  TRAVEL: 'TRAVEL',
 };
 
 exports.createEstimatedExpense = (req, res, next) => {
@@ -18,76 +18,37 @@ exports.createEstimatedExpense = (req, res, next) => {
     description: req.body.description,
     expenseType: req.body.expenseType,
     amount: req.body.amount,
-    createdById: req.body.createdById
+    createdById: req.body.createdById,
   });
   expense
     .save()
-    .then(result => {
+    .then((result) => {
       res.status(201).json({
         message: 'Estimated expense created',
-        result: result
+        result: result,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Error creating estimated expense: ' + error
+        message: 'Error creating estimated expense: ' + error,
       });
     });
 };
 
 exports.getEstimatedExpense = (req, res, next) => {
   EstimatedExpense.findById(req.params.id)
-    .then(estimatedExpense => {
+    .then((estimatedExpense) => {
       if (estimatedExpense) {
         res.status(200).json(estimatedExpense);
       } else {
         res.status(400).json({ message: 'Estimated expense not found' });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to get estimated expense: ' + error
+        message: 'Failed to get estimated expense: ' + error,
       });
     });
-};
-
-exports.getEstimatedExpenses = (req, res, next) => {
-  const pageSize = +req.query.pagesize;
-  const currentPage = +req.query.page;
-  const estimatedExpenseQuery = EstimatedExpense.find({
-    createdById: req.query.createdById
-  }).sort([['description', 1]]);
-  if (pageSize && currentPage) {
-    estimatedExpenseQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
-  }
-  estimatedExpenseQuery
-    .then(estimatedExpenses => {
-      res.status(200).json({
-        message: 'Estimated expense fetched successfully',
-        estimatedExpenses: estimatedExpenses
-      });
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: 'Failed to get estimated expenses: ' + error
-      });
-    });
-};
-
-exports.getTotalCountEstimatedExpenses = (req, res, next) => {
-  EstimatedExpense.find({ createdById: req.params.createdById }).then(
-    estimatedExpenses => {
-      if (estimatedExpenses) {
-        res.status(200).json({
-          maxEstimatedExpenses: getTotal(estimatedExpenses)
-        });
-      } else {
-        res.status(200).json({
-          maxEstimatedExpenses: 0
-        });
-      }
-    }
-  );
 };
 
 exports.updateEstimatedExpense = (req, res, next) => {
@@ -96,17 +57,17 @@ exports.updateEstimatedExpense = (req, res, next) => {
     {
       description: req.body.description,
       expenseType: req.body.expenseType,
-      amount: req.body.amount
+      amount: req.body.amount,
     }
   )
     .then(() => {
       res.status(201).json({
-        message: 'Estimated expense updated'
+        message: 'Estimated expense updated',
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to update estimated expense: ' + error
+        message: 'Failed to update estimated expense: ' + error,
       });
     });
 };
@@ -115,12 +76,12 @@ exports.deleteEstimatedExpense = (req, res, next) => {
   EstimatedExpense.deleteOne({ _id: req.params.id })
     .then(() => {
       res.status(201).json({
-        message: 'Estimated expense deleted'
+        message: 'Estimated expense deleted',
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to delete estimated expense: ' + error
+        message: 'Failed to delete estimated expense: ' + error,
       });
     });
 };
@@ -129,35 +90,35 @@ exports.createSalary = (req, res, next) => {
   const salary = new Salary({
     salaryType: req.body.salaryType,
     amount: req.body.amount,
-    createdById: req.body.createdById
+    createdById: req.body.createdById,
   });
   salary
     .save()
-    .then(result => {
+    .then((result) => {
       res.status(201).json({
         message: 'Salary created',
-        result: result
+        result: result,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Error creating salary: ' + error
+        message: 'Error creating salary: ' + error,
       });
     });
 };
 
 exports.getSalary = (req, res, next) => {
   Salary.findById(req.params.id)
-    .then(salary => {
+    .then((salary) => {
       if (salary) {
         res.status(200).json(salary);
       } else {
         res.status(400).json({ message: 'Salary not found' });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to get salary: ' + error
+        message: 'Failed to get salary: ' + error,
       });
     });
 };
@@ -167,17 +128,17 @@ exports.updateSalary = (req, res, next) => {
     { _id: req.body.id },
     {
       salaryType: req.body.salaryType,
-      amount: req.body.amount
+      amount: req.body.amount,
     }
   )
     .then(() => {
       res.status(201).json({
-        message: 'Salary updated'
+        message: 'Salary updated',
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to update salary: ' + error
+        message: 'Failed to update salary: ' + error,
       });
     });
 };
@@ -188,47 +149,135 @@ exports.getDetailedMonthlyExpensesByOwner = (req, res, next) => {
   let expenseAmount = 0;
   Promise.all([
     Salary.findOne({ createdById: req.params.createdById }),
-    EstimatedExpense.find({ createdById: req.params.createdById })
-  ]).then(results => {
-    if (results[0]) {
-      expenseInfo.salaryId = results[0]._id;
-      salaryAmount = getMonthlySalary(results[0]);
-      expenseInfo.monthlySalaryAmount = salaryAmount;
-    } else {
-      expenseInfo.salaryId = '';
-      expenseInfo.monthlySalaryAmount = 0;
-    }
-    if (results[1]) {
-      let estimatedExpenses = results[1];
-      expenseAmount = getTotalEstimatedExpenses(estimatedExpenses, null);
-      expenseInfo.monthlyTotalExpectedExpenseAmount = expenseAmount;
-      expenseInfo.budgetDineOutAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.DINE_OUT);
-      expenseInfo.budgetGiftAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.GIFT);
-      expenseInfo.budgetGroceryAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.GROCERY);
-      expenseInfo.budgetHouseAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.HOUSE);
-      expenseInfo.budgetMembershipAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.MEMBERSHIP);
-      expenseInfo.budgetOtherAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.OTHER);
-      expenseInfo.budgetTransportationAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.TRANSPORTATION);
-      expenseInfo.budgetTravelAmount = getTotalEstimatedExpenses(estimatedExpenses, EXPENSE_TYPE.TRAVEL);
-    } else {
-      expenseInfo.monthlyTotalExpectedExpenseAmount = 0;
-      expenseInfo.budgetDineOutAmount = 0;
-      expenseInfo.budgetGiftAmount = 0;
-      expenseInfo.budgetGroceryAmount = 0;
-      expenseInfo.budgetHouseAmount = 0;
-      expenseInfo.budgetMembershipAmount = 0;
-      expenseInfo.budgetOtherAmount = 0;
-      expenseInfo.budgetTransportationAmount = 0;
-      expenseInfo.budgetTravelAmount = 0;
-    }
-    expenseInfo.monthlyTotalEstimatedSpareAmount = getTotalEstimatedSpare(expenseAmount, salaryAmount);
+    EstimatedExpense.find({ createdById: req.params.createdById }),
+  ])
+    .then((results) => {
+      if (results[0]) {
+        expenseInfo.salaryId = results[0]._id;
+        salaryAmount = getMonthlySalary(results[0]);
+        expenseInfo.monthlySalaryAmount = salaryAmount;
+      } else {
+        expenseInfo.salaryId = '';
+        expenseInfo.monthlySalaryAmount = 0;
+      }
+      if (results[1]) {
+        let estimatedExpenses = results[1];
+        expenseAmount = getTotalEstimatedExpenses(estimatedExpenses, null);
+        expenseInfo.monthlyTotalExpectedExpenseAmount = expenseAmount;
+        expenseInfo.budgetDineOutAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.DINE_OUT
+        );
+        expenseInfo.budgetGiftAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.GIFT
+        );
+        expenseInfo.budgetGroceryAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.GROCERY
+        );
+        expenseInfo.budgetHouseAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.HOUSE
+        );
+        expenseInfo.budgetMembershipAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.MEMBERSHIP
+        );
+        expenseInfo.budgetOtherAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.OTHER
+        );
+        expenseInfo.budgetTransportationAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.TRANSPORTATION
+        );
+        expenseInfo.budgetTravelAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          EXPENSE_TYPE.TRAVEL
+        );
+      } else {
+        expenseInfo.monthlyTotalExpectedExpenseAmount = 0;
+        expenseInfo.budgetDineOutAmount = 0;
+        expenseInfo.budgetGiftAmount = 0;
+        expenseInfo.budgetGroceryAmount = 0;
+        expenseInfo.budgetHouseAmount = 0;
+        expenseInfo.budgetMembershipAmount = 0;
+        expenseInfo.budgetOtherAmount = 0;
+        expenseInfo.budgetTransportationAmount = 0;
+        expenseInfo.budgetTravelAmount = 0;
+      }
+      expenseInfo.monthlyTotalEstimatedSpareAmount = getTotalEstimatedSpare(
+        expenseAmount,
+        salaryAmount
+      );
 
-    res.status(200).json(expenseInfo);
-  }).catch(error => {
-    res.status(500).json({
-      message: 'Failed to get budget info: ' + error
+      res.status(200).json(expenseInfo);
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Failed to get budget info: ' + error,
+      });
     });
+};
+
+exports.getTotalExpenseEstimatorRecordsCount = (req, res, next) => {
+  const expenseEstimatorType = req.query.expenseType;
+  const expenseEstimatorQuery = EstimatedExpense.find({
+    createdById: req.query.createdById,
   });
+  if (expenseEstimatorType) {
+    expenseEstimatorQuery.where('expenseType', expenseEstimatorType);
+  }
+  expenseEstimatorQuery
+    .then((expenseEstimators) => {
+      if (expenseEstimators) {
+        res.status(200).json({
+          totalCount: getTotal(expenseEstimators),
+        });
+      } else {
+        res.status(200).json({
+          totalCount: 0,
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Failed to get total expense estimators: ' + error,
+      });
+    });
+};
+
+exports.getEstimatedExpenses = (req, res, next) => {
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.page;
+  const expenseType = req.query.expenseType;
+  const estimatedExpenseQuery = EstimatedExpense.find({
+    createdById: req.query.createdById,
+  }).sort([['description', 1]]);
+  if (pageSize && currentPage) {
+    estimatedExpenseQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+  if (expenseType) {
+    estimatedExpenseQuery.where('expenseType', expenseType);
+  }
+
+  console.log('Page size: ' + pageSize);
+  console.log('Current Page: ' + currentPage);
+  console.log('Expense Type: ' + expenseType);
+
+  estimatedExpenseQuery
+    .then((estimatedExpense) => {
+      res.status(200).json({
+        message: 'Estimated Expenses fetched successfully',
+        estimatedExpense: estimatedExpense,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Failed to get estimated expenses: ' + error,
+      });
+    });
 };
 
 function getMonthlySalary(salaryData) {

@@ -9,16 +9,6 @@ router.post(
 );
 
 router.get(
-  '/expense-estimator',
-  expenseEstimatorController.getEstimatedExpenses
-);
-
-router.get(
-  '/expense-estimator-count/:createdById',
-  expenseEstimatorController.getTotalCountEstimatedExpenses
-)
-
-router.get(
   '/expense-estimator/:id',
   expenseEstimatorController.getEstimatedExpense
 );
@@ -42,6 +32,16 @@ router.patch('/salary/:id', expenseEstimatorController.updateSalary);
 router.get(
   '/expense-estimator-detailedByOwner/:createdById',
   expenseEstimatorController.getDetailedMonthlyExpensesByOwner
+);
+
+router.get(
+  '/expense-estimator-count',
+  expenseEstimatorController.getTotalExpenseEstimatorRecordsCount
+);
+
+router.get(
+  '/expense-estimator',
+  expenseEstimatorController.getEstimatedExpenses
 );
 
 module.exports = router;
