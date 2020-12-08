@@ -262,10 +262,6 @@ exports.getEstimatedExpenses = (req, res, next) => {
     estimatedExpenseQuery.where('expenseType', expenseType);
   }
 
-  console.log('Page size: ' + pageSize);
-  console.log('Current Page: ' + currentPage);
-  console.log('Expense Type: ' + expenseType);
-
   estimatedExpenseQuery
     .then((estimatedExpense) => {
       res.status(200).json({
