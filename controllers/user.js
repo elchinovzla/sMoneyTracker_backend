@@ -8,18 +8,18 @@ const INVALID_CREDENTIALS = 'Wrong Credentials email/password';
 const INACTIVE_USER = 'You no longer has access to this site';
 
 exports.createUser = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then(hashPassword => {
+  bcrypt.hash(req.body.password, 10).then((hashPassword) => {
     const user = new User({
       email: req.body.email,
       password: hashPassword,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       isAdmin: req.body.isAdmin,
-      isActive: req.body.isActive
+      isActive: req.body.isActive,
     });
     user
       .save()
-      .then(result => {
+      .then((result) => {
         sendNotification(
           user.email,
           'sMoneyTracker Registration',
@@ -32,12 +32,12 @@ exports.createUser = (req, res, next) => {
         );
         res.status(201).json({
           message: 'User Created',
-          result: result
+          result: result,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).json({
-          message: 'Error creating user: ' + error
+          message: 'Error creating user: ' + error,
         });
       });
   });
@@ -46,26 +46,26 @@ exports.createUser = (req, res, next) => {
 exports.userLogin = (req, res, next) => {
   let fetchedUser;
   User.findOne({ email: req.body.email })
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return res.status(401).json({
-          message: INVALID_CREDENTIALS
+          message: INVALID_CREDENTIALS,
         });
       }
       fetchedUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
-    .then(result => {
+    .then((result) => {
       if (!result) {
         return res.status(401).json({
-          message: INVALID_CREDENTIALS
+          message: INVALID_CREDENTIALS,
         });
       }
     })
     .then(() => {
       if (fetchedUser.isActive.toString() === 'false') {
         return res.status(401).json({
-          message: INACTIVE_USER
+          message: INACTIVE_USER,
         });
       }
       const token = jwt.sign(
@@ -75,7 +75,7 @@ exports.userLogin = (req, res, next) => {
           firstName: fetchedUser.firstName,
           lastName: fetchedUser.lastName,
           isAdmin: fetchedUser.isAdmin,
-          isActive: fetchedUser.isActive
+          isActive: fetchedUser.isActive,
         },
         'secret_this_should_be_longer',
         { expiresIn: '1h' }
@@ -88,56 +88,59 @@ exports.userLogin = (req, res, next) => {
         lastName: fetchedUser.lastName,
         email: fetchedUser.email,
         isAdmin: fetchedUser.isAdmin,
-        isActive: fetchedUser.isActive
+        isActive: fetchedUser.isActive,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
       return res.status(401).json({
-        message: INVALID_CREDENTIALS
+        message: INVALID_CREDENTIALS,
       });
     });
 };
 
 exports.getUsers = (req, res, next) => {
-  const pageSize = +req.query.pagesize;
+  const pageSize = +req.query.pageSize;
   const currentPage = +req.query.page;
-  const userQuery = User.find({}).sort([['firstName', 1], ['lastName', 1]]);
+  const userQuery = User.find({}).sort([
+    ['firstName', 1],
+    ['lastName', 1],
+  ]);
   let fetchedUsers;
   if (pageSize && currentPage) {
     userQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
   }
   userQuery
-    .then(documents => {
+    .then((documents) => {
       fetchedUsers = documents;
       return User.count();
     })
-    .then(count => {
+    .then((count) => {
       res.status(200).json({
         message: 'Users fetched successfully',
         users: fetchedUsers,
-        maxUsers: count
+        maxUsers: count,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to get users: ' + error
+        message: 'Failed to get users: ' + error,
       });
     });
 };
 
 exports.getUser = (req, res, next) => {
   User.findById(req.params.id)
-    .then(user => {
+    .then((user) => {
       if (user) {
         res.status(200).json(user);
       } else {
         res.status(400).json({ message: 'User not found' });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to get user: ' + error
+        message: 'Failed to get user: ' + error,
       });
     });
 };
@@ -147,54 +150,54 @@ exports.modifyUser = (req, res, next) => {
     { _id: req.body.id },
     {
       isAdmin: req.body.isAdmin,
-      isActive: req.body.isActive
+      isActive: req.body.isActive,
     }
   )
     .then(() => {
       res.status(201).json({
-        message: 'User Updated'
+        message: 'User Updated',
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: 'Failed to update user: ' + error
+        message: 'Failed to update user: ' + error,
       });
     });
 };
 
 exports.updateProfile = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then(hashPassword => {
+  bcrypt.hash(req.body.password, 10).then((hashPassword) => {
     User.findOneAndUpdate(
       { _id: req.body.id },
       {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        password: hashPassword
+        password: hashPassword,
       }
     )
       .then(() => {
         res.status(201).json({
-          message: 'User Updated'
+          message: 'User Updated',
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).json({
-          message: 'Failed to update user: ' + error
+          message: 'Failed to update user: ' + error,
         });
       });
   });
 };
 
 exports.resetPassword = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then(hashPassword => {
+  bcrypt.hash(req.body.password, 10).then((hashPassword) => {
     User.findOneAndUpdate(
       { email: req.body.email },
       {
-        password: hashPassword
+        password: hashPassword,
       }
     )
-      .then(user => {
+      .then((user) => {
         sendNotification(
           user.email,
           'sMoneyTracker Recover Password',
@@ -206,12 +209,12 @@ exports.resetPassword = (req, res, next) => {
           )
         );
         res.status(201).json({
-          message: 'User Updated'
+          message: 'User Updated',
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).json({
-          message: 'Failed to update user: ' + error
+          message: 'Failed to update user: ' + error,
         });
       });
   });
@@ -222,18 +225,18 @@ function sendNotification(recipientEmail, subject, html) {
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER_NAME,
-      pass: process.env.EMAIL_PASSWORD
-    }
+      pass: process.env.EMAIL_PASSWORD,
+    },
   });
 
   let mailOptions = {
     from: process.env.EMAIL_USER_NAME,
     to: recipientEmail,
     subject: subject,
-    html: html
+    html: html,
   };
 
-  transporter.sendMail(mailOptions, function(error, info) {
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log('Email was not able to send: ' + error);
     } else {

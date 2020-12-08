@@ -38,7 +38,7 @@ exports.createMoney = (req, res, next) => {
 };
 
 exports.getMoneyEntries = (req, res, next) => {
-  const pageSize = +req.query.pagesize;
+  const pageSize = +req.query.pageSize;
   const currentPage = +req.query.page;
   const moneyQuery = Money.find({
     createdById: req.query.createdById,
