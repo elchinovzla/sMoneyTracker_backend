@@ -9,8 +9,8 @@ const incomeSchema = mongoose.Schema({
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 incomeSchema.plugin(uniqueValidator);

@@ -8,8 +8,8 @@ const estimatedExpenseSchema = mongoose.Schema({
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 estimatedExpenseSchema.plugin(uniqueValidator);

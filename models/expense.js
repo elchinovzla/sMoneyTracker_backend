@@ -9,14 +9,14 @@ const expenseSchema = mongoose.Schema({
   savingsId: {
     type: mongoose.Schema.Types.ObjectId,
     required: false,
-    ref: 'Savings'
+    ref: 'Savings',
   },
   note: { type: String, required: false },
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 expenseSchema.plugin(uniqueValidator);

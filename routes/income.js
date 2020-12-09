@@ -7,7 +7,7 @@ router.post('/income', incomeController.createIncome);
 
 router.get('/income/:id', incomeController.getIncomeById);
 
-router.get('/income', incomeController.getIncomes)
+router.get('/income', incomeController.getIncomes);
 
 router.get('/income-count', incomeController.getTotalCountIncome);
 

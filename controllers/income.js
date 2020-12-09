@@ -2,6 +2,7 @@ const Income = require('../models/income');
 const Dinero = require('dinero.js');
 Dinero.defaultCurrency = 'CAD';
 const Moment = require('moment');
+const common = require('./common');
 
 exports.createIncome = (req, res, next) => {
   const income = new Income({
@@ -89,7 +90,7 @@ exports.getTotalCountIncome = (req, res, next) => {
     .then((incomes) => {
       if (incomes) {
         res.status(200).json({
-          maxIncomes: getTotal(incomes),
+          maxIncomes: common.getTotal(incomes),
         });
       } else {
         res.status(200).json({
@@ -199,14 +200,6 @@ exports.deleteIncome = (req, res, next) => {
       });
     });
 };
-
-function getTotal(estimatedExpenses) {
-  let totalCount = 0;
-  estimatedExpenses.forEach(function () {
-    totalCount++;
-  });
-  return totalCount;
-}
 
 function getTotalIncome(incomes) {
   let totalAmount = Dinero({ amount: 0 });

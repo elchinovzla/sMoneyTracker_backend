@@ -2,7 +2,7 @@ const http = require('http');
 const app = require('./app');
 const debug = require('debug')('node-angular');
 
-const normalizePort = val => {
+const normalizePort = (val) => {
   var port = parseInt(val, 10);
   if (isNaN(port)) {
     return val;
@@ -12,7 +12,7 @@ const normalizePort = val => {
   return false;
 };
 
-const onError = error => {
+const onError = (error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }

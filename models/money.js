@@ -9,8 +9,8 @@ const moneySchema = mongoose.Schema({
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 moneySchema.plugin(uniqueValidator);

@@ -12,6 +12,7 @@ const EXPENSE_TYPE = {
   TRANSPORTATION: 'TRANSPORTATION',
   TRAVEL: 'TRAVEL',
 };
+const common = require('./common');
 
 exports.createEstimatedExpense = (req, res, next) => {
   const expense = new EstimatedExpense({
@@ -233,7 +234,7 @@ exports.getTotalExpenseEstimatorRecordsCount = (req, res, next) => {
     .then((expenseEstimators) => {
       if (expenseEstimators) {
         res.status(200).json({
-          totalCount: getTotal(expenseEstimators),
+          totalCount: common.getTotal(expenseEstimators),
         });
       } else {
         res.status(200).json({
@@ -324,12 +325,4 @@ function getTotalEstimatedSpare(estimatedExpense, salary) {
     return salaryDinero.subtract(totalExpenses).getAmount() / 100;
   }
   return 0;
-}
-
-function getTotal(estimatedExpenses) {
-  let totalCount = 0;
-  estimatedExpenses.forEach(function () {
-    totalCount++;
-  });
-  return totalCount;
 }

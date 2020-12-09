@@ -13,6 +13,7 @@ const MONEY_TYPE = {
   CASH: 'CASH',
   GIFT_CARD: 'GIFT_CARD',
 };
+const common = require('./common');
 
 exports.createMoney = (req, res, next) => {
   const money = new Money({
@@ -66,7 +67,7 @@ exports.getTotalMoneyRecords = (req, res, next) => {
   }).then((moneyEntries) => {
     if (moneyEntries) {
       res.status(200).json({
-        moneyTotalCount: getTotal(moneyEntries),
+        moneyTotalCount: common.getTotal(moneyEntries),
       });
     } else {
       res.status(200).json({
@@ -228,12 +229,4 @@ function getTotalMoneyAmount(moneyEntries, moneyType) {
     }
   }
   return totalAmount.getAmount() / 100;
-}
-
-function getTotal(moneyEntries) {
-  let totalCount = 0;
-  moneyEntries.forEach(function () {
-    totalCount++;
-  });
-  return totalCount;
 }

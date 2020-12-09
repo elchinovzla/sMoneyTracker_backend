@@ -13,6 +13,7 @@ const EXPENSE_TYPE = {
   TRANSPORTATION: 'TRANSPORTATION',
   TRAVEL: 'TRAVEL',
 };
+const common = require('./common');
 
 exports.createExpense = (req, res, next) => {
   const expense = new Expense({
@@ -95,7 +96,7 @@ exports.getTotalExpenseRecordsCount = (req, res, next) => {
     .then((expenses) => {
       if (expenses) {
         res.status(200).json({
-          totalCount: getTotal(expenses),
+          totalCount: common.getTotal(expenses),
         });
       } else {
         res.status(200).json({
@@ -356,14 +357,6 @@ function getTotalExpenseAmount(expenses, expenseType) {
     });
   }
   return totalAmount.getAmount() / 100;
-}
-
-function getTotal(expenses) {
-  let totalCount = 0;
-  expenses.forEach(function () {
-    totalCount++;
-  });
-  return totalCount;
 }
 
 function getDashboardInfo(results) {

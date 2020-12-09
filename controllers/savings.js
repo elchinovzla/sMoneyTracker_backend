@@ -11,6 +11,7 @@ const EXPENSE_TYPE = {
   TRANSPORTATION: 'TRANSPORTATION',
   TRAVEL: 'TRAVEL',
 };
+const common = require('./common');
 
 exports.createSavings = (req, res, next) => {
   const savings = new Savings({
@@ -64,7 +65,7 @@ exports.getTotalSavingsRecords = (req, res, next) => {
   }).then((savingsEntries) => {
     if (savingsEntries) {
       res.status(200).json({
-        savingsTotalCount: getTotal(savingsEntries),
+        savingsTotalCount: common.getTotal(savingsEntries),
       });
     } else {
       res.status(200).json({
@@ -209,12 +210,4 @@ function getTotalSavingsAmount(savingsEntries, expenseType) {
     });
   }
   return totalAmount.getAmount() / 100;
-}
-
-function getTotal(savingsEntries) {
-  let totalCount = 0;
-  savingsEntries.forEach(function () {
-    totalCount++;
-  });
-  return totalCount;
 }

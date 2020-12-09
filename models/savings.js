@@ -9,8 +9,8 @@ const savingsSchema = mongoose.Schema({
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 savingsSchema.index({ description: 1, createdById: 1 }, { unique: true });
