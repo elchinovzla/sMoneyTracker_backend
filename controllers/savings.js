@@ -18,6 +18,7 @@ exports.createSavings = (req, res, next) => {
     description: req.body.description,
     expenseType: req.body.expenseType,
     amount: req.body.amount,
+    amountPerMonth: req.body.amountPerMonth,
     note: req.body.note,
     createdById: req.body.createdById,
   });
@@ -101,6 +102,9 @@ exports.getSavingsInfo = (req, res, next) => {
       if (savingsEntries) {
         res.status(200).json({
           totalSavingsAmount: getTotalSavingsAmount(savingsEntries, null),
+          totalSavingsAmountPerMonth: getTotalSavingsAmountPerMonth(
+            savingsEntries
+          ),
           totalSavingsDineOutAmount: getTotalSavingsAmount(
             savingsEntries,
             EXPENSE_TYPE.DINE_OUT
@@ -163,6 +167,7 @@ exports.updateSavings = (req, res, next) => {
       description: req.body.description,
       expenseType: req.body.expenseType,
       amount: req.body.amount,
+      amountPerMonth: req.body.amountPerMonth,
       note: req.body.note,
     }
   )
@@ -194,6 +199,7 @@ exports.deleteSavings = (req, res, next) => {
 
 function getTotalSavingsAmount(savingsEntries, expenseType) {
   let totalAmount = Dinero({ amount: 0 });
+
   if (expenseType) {
     savingsEntries.forEach(function (savingsEntry) {
       if (expenseType === savingsEntry.expenseType) {
@@ -209,5 +215,18 @@ function getTotalSavingsAmount(savingsEntries, expenseType) {
       );
     });
   }
+
   return totalAmount.getAmount() / 100;
+}
+
+function getTotalSavingsAmountPerMonth(savingsEntries) {
+  let totalAmountPerMonth = Dinero({ amount: 0 });
+
+  savingsEntries.forEach(function (savingsEntry) {
+    totalAmountPerMonth = totalAmountPerMonth.add(
+      Dinero({ amount: Math.round(savingsEntry.amountPerMonth * 100) })
+    );
+  });
+
+  return totalAmountPerMonth.getAmount() / 100;
 }

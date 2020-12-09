@@ -30,6 +30,11 @@ mongoose
     console.log('Connection failed!');
   });
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {

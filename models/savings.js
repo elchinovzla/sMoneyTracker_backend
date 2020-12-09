@@ -5,6 +5,7 @@ const savingsSchema = mongoose.Schema({
   description: { type: String, required: true },
   expenseType: { type: String, required: true },
   amount: { type: Number, required: true },
+  amountPerMonth: { type: Number, required: true },
   note: { type: String, required: false },
   createdById: {
     type: mongoose.Schema.Types.ObjectId,
