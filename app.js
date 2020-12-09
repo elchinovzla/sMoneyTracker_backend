@@ -8,18 +8,19 @@ const incomeRoutes = require('./routes/income');
 const moneyRoutes = require('./routes/money');
 const savingsRoutes = require('./routes/savings');
 const expenseRoutes = require('./routes/expense');
+const yearlyBalanceRoutes = require('./routes/yearly-balance');
 
 const app = express();
 
 mongoose
   .connect(
     'mongodb+srv://' +
-    process.env.MONGO_USER_NAME +
-    ':' +
-    process.env.MONGO_PASSWORD +
-    process.env.MONGO_CLUSTER,
+      process.env.MONGO_USER_NAME +
+      ':' +
+      process.env.MONGO_PASSWORD +
+      process.env.MONGO_CLUSTER,
     {
-      useNewUrlParser: true
+      useNewUrlParser: true,
     }
   )
   .then(() => {
@@ -50,5 +51,6 @@ app.use('/api/income', incomeRoutes);
 app.use('/api/money', moneyRoutes);
 app.use('/api/savings', savingsRoutes);
 app.use('/api/expense', expenseRoutes);
+app.use('/api/yearly-balance', yearlyBalanceRoutes);
 
 module.exports = app;
