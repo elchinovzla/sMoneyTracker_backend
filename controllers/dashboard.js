@@ -117,6 +117,9 @@ async function getBalances(res, date, userId) {
   const startPreviousAnnualDate = new Date(date.getFullYear() - 1, 0);
   const endPreviousAnnualDate = startAnnualDate;
 
+  console.log(startPreviousAnnualDate);
+  console.log(endPreviousAnnualDate);
+
   summaryInfo.annualExpense = await getAsyncExpense(
     startAnnualDate,
     endAnnualDate,
