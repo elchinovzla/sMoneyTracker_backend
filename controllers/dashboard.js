@@ -127,12 +127,15 @@ async function getBalances(res, date, userId) {
     endAnnualDate,
     userId
   );
-  summaryInfo.currentBalance = await getAsyncCurrentBalance(
-    summaryInfo.annualIncome,
-    summaryInfo.annualExpense,
+  summaryInfo.previousYearBalance = await getAsyncPreviousYearBalance(
     startPreviousAnnualDate,
     endPreviousAnnualDate,
     userId
+  );
+  summaryInfo.currentBalance = await getAsyncCurrentBalance(
+    summaryInfo.annualIncome,
+    summaryInfo.annualExpense,
+    summaryInfo.previousYearBalance
   );
   summaryInfo.availableMoney = await getAsyncMoneyAvailable(userId);
   summaryInfo.delta = await getAsyncDelta(
@@ -153,20 +156,20 @@ async function getAsyncIncome(startDate, endDate, userId) {
   return common.getTotalIncome(incomes, null);
 }
 
-async function getAsyncCurrentBalance(
-  annualIncome,
-  annualExpense,
-  startDate,
-  endDate,
-  userId
-) {
-  let previousYearBalance = await getPreviousYearBalance(
+async function getAsyncPreviousYearBalance(startDate, endDate, userId) {
+  let previousYearBalances = await getPreviousYearBalance(
     startDate,
     endDate,
     userId
   );
-  let previousYearBalanceAmount = common.getTotalAmount(previousYearBalance);
+  return common.getTotalAmount(previousYearBalances);
+}
 
+async function getAsyncCurrentBalance(
+  annualIncome,
+  annualExpense,
+  previousYearBalanceAmount
+) {
   return getCurrentBalance(
     annualIncome,
     annualExpense,
