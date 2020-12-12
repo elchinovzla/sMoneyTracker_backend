@@ -1,18 +1,9 @@
 const EstimatedExpense = require('../models/estimated-expense');
 const Salary = require('../models/salary');
-const Dinero = require('dinero.js');
-Dinero.defaultCurrency = 'CAD';
-const EXPENSE_TYPE = {
-  DINE_OUT: 'DINE_OUT',
-  GIFT: 'GIFT',
-  GROCERY: 'GROCERY',
-  HOUSE: 'HOUSE',
-  MEMBERSHIP: 'MEMBERSHIP',
-  OTHER: 'OTHER',
-  TRANSPORTATION: 'TRANSPORTATION',
-  TRAVEL: 'TRAVEL',
-};
 const common = require('./common');
+const Dinero = common.Dinero;
+const expenseType = require('./types/expense');
+const EXPENSE_TYPE = expenseType.EXPENSE_TYPE;
 
 exports.createEstimatedExpense = (req, res, next) => {
   const expense = new EstimatedExpense({

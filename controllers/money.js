@@ -1,19 +1,7 @@
 const Money = require('../models/money');
-const Dinero = require('dinero.js');
-Dinero.defaultCurrency = 'CAD';
-const MONEY_TYPE = {
-  MONEY_IN_THE_BANK: 'MONEY_IN_THE_BANK',
-  MONEY_INVESTED: 'MONEY_INVESTED',
-  UNCLAIMED: 'UNCLAIMED',
-  OTHER: 'OTHER',
-  CHECKING: 'CHECKING',
-  SAVINGS: 'SAVINGS',
-  RRSP: 'RRSP',
-  TFSA: 'TFSA',
-  CASH: 'CASH',
-  GIFT_CARD: 'GIFT_CARD',
-};
 const common = require('./common');
+const moneyType = require('./types/money');
+const MONEY_TYPE = moneyType.MONEY_TYPE;
 
 exports.createMoney = (req, res, next) => {
   const money = new Money({
@@ -187,46 +175,6 @@ exports.deleteMoney = (req, res, next) => {
     });
 };
 
-function getDinero(moneyEntries, moneyType) {
-  let totalAmount = Dinero({ amount: 0 });
-  moneyEntries.forEach(function (moneyEntry) {
-    if (moneyType === moneyEntry.moneyType) {
-      totalAmount = totalAmount.add(
-        Dinero({ amount: Math.round(moneyEntry.amount * 100) })
-      );
-    }
-  });
-  return totalAmount;
-}
-
 function getTotalMoneyAmount(moneyEntries, moneyType) {
-  let totalAmount = Dinero({ amount: 0 });
-  switch (moneyType) {
-    case MONEY_TYPE.MONEY_IN_THE_BANK: {
-      totalAmount = totalAmount.add(
-        getDinero(moneyEntries, MONEY_TYPE.CHECKING)
-      );
-      totalAmount = totalAmount.add(
-        getDinero(moneyEntries, MONEY_TYPE.SAVINGS)
-      );
-      break;
-    }
-    case MONEY_TYPE.MONEY_INVESTED: {
-      totalAmount = totalAmount.add(getDinero(moneyEntries, MONEY_TYPE.RRSP));
-      totalAmount = totalAmount.add(getDinero(moneyEntries, MONEY_TYPE.TFSA));
-      break;
-    }
-    case MONEY_TYPE.OTHER: {
-      totalAmount = totalAmount.add(getDinero(moneyEntries, MONEY_TYPE.CASH));
-      totalAmount = totalAmount.add(
-        getDinero(moneyEntries, MONEY_TYPE.GIFT_CARD)
-      );
-      break;
-    }
-    default: {
-      totalAmount = totalAmount.add(getDinero(moneyEntries, moneyType));
-      break;
-    }
-  }
-  return totalAmount.getAmount() / 100;
+  return common.getTotalMoneyAmount(moneyEntries, moneyType);
 }

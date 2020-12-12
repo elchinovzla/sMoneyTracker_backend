@@ -1,17 +1,8 @@
 const Savings = require('../models/savings');
-const Dinero = require('dinero.js');
-Dinero.defaultCurrency = 'CAD';
-const EXPENSE_TYPE = {
-  DINE_OUT: 'DINE_OUT',
-  GIFT: 'GIFT',
-  GROCERY: 'GROCERY',
-  HOUSE: 'HOUSE',
-  MEMBERSHIP: 'MEMBERSHIP',
-  OTHER: 'OTHER',
-  TRANSPORTATION: 'TRANSPORTATION',
-  TRAVEL: 'TRAVEL',
-};
 const common = require('./common');
+const Dinero = common.Dinero;
+const expenseType = require('./types/expense');
+const EXPENSE_TYPE = expenseType.EXPENSE_TYPE;
 
 exports.createSavings = (req, res, next) => {
   const savings = new Savings({
@@ -198,25 +189,7 @@ exports.deleteSavings = (req, res, next) => {
 };
 
 function getTotalSavingsAmount(savingsEntries, expenseType) {
-  let totalAmount = Dinero({ amount: 0 });
-
-  if (expenseType) {
-    savingsEntries.forEach(function (savingsEntry) {
-      if (expenseType === savingsEntry.expenseType) {
-        totalAmount = totalAmount.add(
-          Dinero({ amount: Math.round(savingsEntry.amount * 100) })
-        );
-      }
-    });
-  } else {
-    savingsEntries.forEach(function (savingsEntry) {
-      totalAmount = totalAmount.add(
-        Dinero({ amount: Math.round(savingsEntry.amount * 100) })
-      );
-    });
-  }
-
-  return totalAmount.getAmount() / 100;
+  return common.getTotalSavingsAmount(savingsEntries, expenseType);
 }
 
 function getTotalSavingsAmountPerMonth(savingsEntries) {

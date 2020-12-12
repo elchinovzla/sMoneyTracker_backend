@@ -9,6 +9,7 @@ const moneyRoutes = require('./routes/money');
 const savingsRoutes = require('./routes/savings');
 const expenseRoutes = require('./routes/expense');
 const yearlyBalanceRoutes = require('./routes/yearly-balance');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
@@ -57,5 +58,6 @@ app.use('/api/money', moneyRoutes);
 app.use('/api/savings', savingsRoutes);
 app.use('/api/expense', expenseRoutes);
 app.use('/api/yearly-balance', yearlyBalanceRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 module.exports = app;

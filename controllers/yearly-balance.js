@@ -1,7 +1,5 @@
 const YearlyBalance = require('../models/yearly-balance');
-const Dinero = require('dinero.js');
 const common = require('./common');
-Dinero.defaultCurrency = 'CAD';
 
 exports.createYearlyBalance = (req, res, next) => {
   const yearlyBalance = new YearlyBalance({

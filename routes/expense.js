@@ -15,8 +15,6 @@ router.get('/monthly-infoByOwnerId', expenseController.getMonthlyExpenseInfo);
 
 router.get('/annual-infoByOwnerId', expenseController.getAnnualExpenseInfo);
 
-router.get('/expense-dashboard', expenseController.getDashboardInfo);
-
 router.patch('/expense', expenseController.updateExpense);
 
 router.delete('/expense/:id', expenseController.deleteExpense);
