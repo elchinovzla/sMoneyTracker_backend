@@ -73,7 +73,7 @@ exports.getMonthSummaryBalancesByOwner = (req, res, next) => {
   let summaryInfo = {};
   const date = new Date(req.query.date);
   const startMonthDate = new Date(date.getFullYear(), date.getMonth());
-  const endMonthDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const endMonthDate = new Date(date.getFullYear(), date.getMonth() + 1);
   const userId = req.query.createdById;
 
   Promise.all([
@@ -112,13 +112,13 @@ exports.getSummaryBalancesByOwner = (req, res, next) => {
 
 async function getBalances(res, date, userId) {
   let summaryInfo = {};
-  const startAnnualDate = new Date(date.getFullYear(), 0);
-  const endAnnualDate = new Date(date.getFullYear() + 1, 0);
-  const startPreviousAnnualDate = new Date(date.getFullYear() - 1, 0);
-  const endPreviousAnnualDate = startAnnualDate;
+  const currentYear = date.getFullYear();
+  const startAnnualDate = getYearStartDate(currentYear);
+  const endAnnualDate = getYearEndDate(currentYear);
 
-  console.log(startPreviousAnnualDate);
-  console.log(endPreviousAnnualDate);
+  const previousYear = date.getFullYear() - 1;
+  const startPreviousAnnualDate = getYearStartDate(previousYear);
+  const endPreviousAnnualDate = getYearEndDate(previousYear);
 
   summaryInfo.annualExpense = await getAsyncExpense(
     startAnnualDate,
@@ -268,4 +268,12 @@ function getSavings(userId) {
   return Savings.find({
     createdById: userId,
   });
+}
+
+function getYearStartDate(year) {
+  return new Date('1 January ' + year + ' 00:00:00');
+}
+
+function getYearEndDate(year) {
+  return new Date('31 December ' + year + ' 23:59:00');
 }
