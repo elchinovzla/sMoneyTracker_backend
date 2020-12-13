@@ -160,6 +160,9 @@ async function getAsyncIncome(startDate, endDate, userId) {
 }
 
 async function getAsyncPreviousYearBalance(startDate, endDate, userId) {
+  console.log(startDate);
+  console.log(endDate);
+
   let previousYearBalances = await getPreviousYearBalance(
     startDate,
     endDate,
