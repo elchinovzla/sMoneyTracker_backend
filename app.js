@@ -10,6 +10,7 @@ const savingsRoutes = require('./routes/savings');
 const expenseRoutes = require('./routes/expense');
 const yearlyBalanceRoutes = require('./routes/yearly-balance');
 const dashboardRoutes = require('./routes/dashboard');
+const salaryRoutes = require('./routes/salary');
 
 const app = express();
 
@@ -59,5 +60,6 @@ app.use('/api/savings', savingsRoutes);
 app.use('/api/expense', expenseRoutes);
 app.use('/api/yearly-balance', yearlyBalanceRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/salary', salaryRoutes);
 
 module.exports = app;

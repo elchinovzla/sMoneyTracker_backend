@@ -23,12 +23,6 @@ router.delete(
   expenseEstimatorController.deleteEstimatedExpense
 );
 
-router.post('/salary', expenseEstimatorController.createSalary);
-
-router.get('/salary/:id', expenseEstimatorController.getSalary);
-
-router.patch('/salary/:id', expenseEstimatorController.updateSalary);
-
 router.get(
   '/expense-estimator-detailedByOwner/:createdById',
   expenseEstimatorController.getDetailedMonthlyExpensesByOwner

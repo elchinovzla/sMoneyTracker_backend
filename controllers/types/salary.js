@@ -1,0 +1,10 @@
+const SALARY_TYPE = {
+  WEEKLY: 'WEEKLY',
+  BI_WEEKLY: 'BI_WEEKLY',
+  SEMI_MONTHLY: 'SEMI_MONTHLY',
+  MONTHLY: 'MONTHLY',
+};
+
+module.exports = {
+  SALARY_TYPE,
+};

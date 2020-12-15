@@ -1,5 +1,5 @@
 const EstimatedExpense = require('../models/estimated-expense');
-const Salary = require('../models/salary');
+const SalaryController = require('../controllers/salary');
 const common = require('./common');
 const Dinero = common.Dinero;
 const expenseType = require('./types/expense');
@@ -78,84 +78,24 @@ exports.deleteEstimatedExpense = (req, res, next) => {
     });
 };
 
-exports.createSalary = (req, res, next) => {
-  const salary = new Salary({
-    salaryType: req.body.salaryType,
-    amount: req.body.amount,
-    createdById: req.body.createdById,
-  });
-  salary
-    .save()
-    .then((result) => {
-      res.status(201).json({
-        message: 'Salary created',
-        result: result,
-      });
-    })
-    .catch((error) => {
-      res.status(500).json({
-        message: 'Error creating salary: ' + error,
-      });
-    });
-};
-
-exports.getSalary = (req, res, next) => {
-  Salary.findById(req.params.id)
-    .then((salary) => {
-      if (salary) {
-        res.status(200).json(salary);
-      } else {
-        res.status(400).json({ message: 'Salary not found' });
-      }
-    })
-    .catch((error) => {
-      res.status(500).json({
-        message: 'Failed to get salary: ' + error,
-      });
-    });
-};
-
-exports.updateSalary = (req, res, next) => {
-  Salary.findOneAndUpdate(
-    { _id: req.body.id },
-    {
-      salaryType: req.body.salaryType,
-      amount: req.body.amount,
-    }
-  )
-    .then(() => {
-      res.status(201).json({
-        message: 'Salary updated',
-      });
-    })
-    .catch((error) => {
-      res.status(500).json({
-        message: 'Failed to update salary: ' + error,
-      });
-    });
-};
-
 exports.getDetailedMonthlyExpensesByOwner = (req, res, next) => {
   let expenseInfo = {};
-  let salaryAmount = 0;
-  let expenseAmount = 0;
   Promise.all([
-    Salary.findOne({ createdById: req.params.createdById }),
+    SalaryController.getMonthlySalary(req.params.createdById),
     EstimatedExpense.find({ createdById: req.params.createdById }),
   ])
     .then((results) => {
       if (results[0]) {
-        expenseInfo.salaryId = results[0]._id;
-        salaryAmount = getMonthlySalary(results[0]);
-        expenseInfo.monthlySalaryAmount = salaryAmount;
+        expenseInfo.monthlySalaryAmount = results[0];
       } else {
-        expenseInfo.salaryId = '';
         expenseInfo.monthlySalaryAmount = 0;
       }
       if (results[1]) {
         let estimatedExpenses = results[1];
-        expenseAmount = getTotalEstimatedExpenses(estimatedExpenses, null);
-        expenseInfo.monthlyTotalExpectedExpenseAmount = expenseAmount;
+        expenseInfo.monthlyTotalExpectedExpenseAmount = getTotalEstimatedExpenses(
+          estimatedExpenses,
+          null
+        );
         expenseInfo.budgetDineOutAmount = getTotalEstimatedExpenses(
           estimatedExpenses,
           EXPENSE_TYPE.DINE_OUT
@@ -200,8 +140,8 @@ exports.getDetailedMonthlyExpensesByOwner = (req, res, next) => {
         expenseInfo.budgetTravelAmount = 0;
       }
       expenseInfo.monthlyTotalEstimatedSpareAmount = getTotalEstimatedSpare(
-        expenseAmount,
-        salaryAmount
+        expenseInfo.monthlyTotalExpectedExpenseAmount,
+        expenseInfo.monthlySalaryAmount
       );
 
       res.status(200).json(expenseInfo);
@@ -267,27 +207,6 @@ exports.getEstimatedExpenses = (req, res, next) => {
       });
     });
 };
-
-function getMonthlySalary(salaryData) {
-  if (salaryData) {
-    let salaryAmount = Dinero({ amount: Math.round(salaryData.amount * 100) });
-    switch (salaryData.salaryType) {
-      case 'WEEKLY': {
-        salaryAmount = salaryAmount.multiply(52).divide(12);
-        break;
-      }
-      case 'BI_WEEKLY': {
-        salaryAmount = salaryAmount.multiply(13).divide(6);
-        break;
-      }
-      case 'SEMI_MONTHLY': {
-        salaryAmount = salaryAmount.multiply(2);
-        break;
-      }
-    }
-    return salaryAmount.getAmount() / 100;
-  }
-}
 
 function getTotalEstimatedExpenses(estimatedExpenses, expenseType) {
   let totalAmount = Dinero({ amount: 0 });
