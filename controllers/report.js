@@ -244,7 +244,6 @@ async function getMergedTransactions(expenses, incomes) {
   const allTransactions = [...expenses, ...incomes].sort(
     (a, b) => b.date - a.date
   );
-  console.log(allTransactions);
 
   return allTransactions;
 }
@@ -255,8 +254,6 @@ async function getAsyncSummary(res, startDate, endDate, createdById) {
 
   const totalIncome = common.getTotalIncome(incomes);
   const totalOutcome = common.getTotalExpenseAmount(expenses, null);
-  console.log(totalIncome);
-  console.log(totalOutcome);
   const expensesTransactions = await convertExpensesToTransactions(expenses);
   const incomeTransactions = await convertIncomesToTransactions(incomes);
   const transactions = await getMergedTransactions(
