@@ -135,9 +135,11 @@ async function getBalances(res, date, userId) {
     endPreviousAnnualDate,
     userId
   );
+  summaryInfo.unclaimedAmount = await getUnclaimedAmountBalance(userId);
   summaryInfo.currentBalance = await getAsyncCurrentBalance(
     summaryInfo.annualIncome,
     summaryInfo.annualExpense,
+    summaryInfo.unclaimedAmount,
     summaryInfo.previousYearBalance
   );
   summaryInfo.availableMoney = await getAsyncMoneyAvailable(userId);
@@ -168,14 +170,21 @@ async function getAsyncPreviousYearBalance(startDate, endDate, userId) {
   return common.getTotalAmount(previousYearBalances);
 }
 
+async function getUnclaimedAmountBalance(userId) {
+  let moneyInfo = await getMoneyInTheBank(userId);
+  return common.getTotalMoneyAmount(moneyInfo, MONEY_TYPE.UNCLAIMED);
+}
+
 async function getAsyncCurrentBalance(
   annualIncome,
   annualExpense,
+  unclaimedAmount,
   previousYearBalanceAmount
 ) {
   return getCurrentBalance(
     annualIncome,
     annualExpense,
+    unclaimedAmount,
     previousYearBalanceAmount
   );
 }
@@ -199,17 +208,24 @@ async function getAsyncDelta(moneyAvailable, currentBalance) {
 function getCurrentBalance(
   yearlyIncome,
   yearlyExpenditure,
+  unclaimedAmount,
   previousYearBalance
 ) {
-  let totalIncome = Dinero({ amount: Math.round(yearlyIncome * 100) });
-  let totalExpense = Dinero({ amount: Math.round(yearlyExpenditure * 100) });
-  let previousNetBalance = Dinero({
+  const totalIncome = Dinero({ amount: Math.round(yearlyIncome * 100) });
+  const totalExpense = Dinero({ amount: Math.round(yearlyExpenditure * 100) });
+  const totalUnclaimedAmount = Dinero({
+    amount: Math.round(unclaimedAmount * 100),
+  });
+  const previousNetBalance = Dinero({
     amount: Math.round(previousYearBalance * 100),
   });
 
-  return (
-    totalIncome.add(previousNetBalance).subtract(totalExpense).getAmount() / 100
-  );
+  const totalDinero = totalIncome
+    .add(previousNetBalance)
+    .subtract(totalExpense)
+    .subtract(totalUnclaimedAmount);
+
+  return totalDinero.getAmount() / 100;
 }
 
 function getAvailableMoney(moneyInTheBank, savingsAmount) {
